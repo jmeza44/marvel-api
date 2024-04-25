@@ -1,5 +1,4 @@
-export interface User {
-  userId: number;
+export interface UserDto {
+  id: number;
   username: string;
-  password: string;
 }
