@@ -8,7 +8,7 @@ import { Wrapper } from 'src/shared/models/marvel-api/common/marvel-api-wrapper.
 import { Character } from 'src/shared/models/marvel-api/core/marvel-api-character.model';
 import { CharacterService } from '../services/character.service';
 
-@ApiTags('Authentication')
+@ApiTags('Characters')
 @Controller('characters')
 export class CharactersController {
   constructor(private characterService: CharacterService) {}
