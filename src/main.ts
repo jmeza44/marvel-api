@@ -18,11 +18,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
-  // await app.listen(process.env.PORT || 3000, , () => );
   const port = process.env.PORT || 3000;
-  console.log(`Port ${port}`);
-  await app.listen(port, '0.0.0.0', () => {
-    console.log(`Listening on Port ${port}`);
+  const host = process.env.HOST || '0.0.0.0';
+
+  console.log(`Trying Listening on HOST ${host} and PORT ${port}`);
+
+  await app.listen(port, host, () => {
+    console.log(`Listening on HOST ${host} and PORT ${port}`);
   });
 }
 
