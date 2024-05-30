@@ -1,73 +1,81 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Marvel API
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+[![Node.js CI](https://github.com/jmeza44/marvel-api/actions/workflows/node.js.yml/badge.svg?branch=main&event=push)](https://github.com/jmeza44/marvel-api/actions/workflows/node.js.yml)
 
-## Description
+## Overview
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This project is a NEST JS WEB API that serves as a backend for managing user accounts and favorite Marvel characters. It provides endpoints for creating accounts, signing in, managing favorite characters, retrieving character details, and integrating with SMTP for account validation and password recovery. Characters, Comics, and Series [Data provided by Marvel. © 2024 MARVEL](http://marvel.com)
 
-## Installation
+## Features
 
-```bash
-$ npm install
-```
+- **Authentication**:
+  - Endpoints to create accounts and sign in.
+  - Passwords are securely hashed and stored.
+- **Character Management**:
+  - Endpoint to list characters using search options.
+  - Endpoint to add characters to favorites.
+  - Endpoint to retrieve user's favorite characters.
+  - Endpoint to remove characters from favorites (pending).
+- **Content Details**:
+  - Endpoints to list character's comics and series (pending).
+  - Endpoints to retrieve comic and series details (pending).
+- **Rating System**:
+  - Endpoint to set ratings for characters, comics, or series (pending).
+  - Endpoint to retrieve resource ratings (pending).
+- **SMTP Integration**:
+  - Account creation validation (pending).
+  - Password recovery (pending).
 
-## Running the app
+## Getting Started
 
-```bash
-# development
-$ npm run start
+1. Clone the repository:
 
-# watch mode
-$ npm run start:dev
+   ```bash
+   git clone https://github.com/jmeza44/marvel-api.git
+   ```
 
-# production mode
-$ npm run start:prod
-```
+2. Install dependencies:
 
-## Test
+   ```bash
+   cd marvel-api
+   npm install
+   ```
 
-```bash
-# unit tests
-$ npm run test
+3. Set up environment variables:
+   - Create a `.env` file based on `.env.example` and fill in the necessary configuration.
 
-# e2e tests
-$ npm run test:e2e
+4. Run the application:
 
-# test coverage
-$ npm run test:cov
-```
+   ```bash
+   npm run start
+   ```
 
-## Support
+5. Access the API endpoints as described below.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## API Endpoints
 
-## Stay in touch
+- **Authentication**:
+  - `POST /auth/signup`: Create a new user account.
+  - `POST /auth/signin`: Sign in with existing credentials.
+- **Character Management**:
+  - `GET /characters`: List characters using search options.
+  - `POST /characters/favorites`: Add characters to favorites.
+  - `GET /characters/favorites`: Get user's favorite characters.
+  - `DELETE /characters/favorites/:id`: Remove character from favorites (pending).
+- **Content Details**:
+  - `GET /characters/:id/comics`: List character's comics (pending).
+  - `GET /characters/:id/series`: List character's series (pending).
+  - `GET /comics/:id`: Get comic details (pending).
+  - `GET /series/:id`: Get series details (pending).
+- **Rating System**:
+  - `POST /ratings`: Set a rating for a resource (pending).
+  - `GET /ratings/:id`: Get rating for a resource (pending).
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Contributing
+
+Contributions are welcome! Please follow the [contribution guidelines](CONTRIBUTING.md).
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
