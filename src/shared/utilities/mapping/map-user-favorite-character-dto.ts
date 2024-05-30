@@ -1,5 +1,5 @@
-import { UserFavoriteCharacter } from '../../users/entities/user-favorite-character.entity';
-import { UserFavoriteCharacterDto } from '../../users/models/user-favorite-character.model';
+import { UserFavoriteCharacter } from '../../../users/entities/user-favorite-character.entity';
+import { UserFavoriteCharacterDto } from '../../../users/models/user-favorite-character.model';
 
 export const mapUserFavoriteCharacterDto = (
   userFavoriteCharacterDto: UserFavoriteCharacterDto,

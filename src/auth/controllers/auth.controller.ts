@@ -36,7 +36,7 @@ export class AuthController {
   @Post('sign-up')
   @ApiResponse({ status: 201, description: 'User registered successfully.' })
   @ApiBadRequestResponse({ description: 'Username already exists.' })
-  async signUp(@Body() createUserDto: CreateUserDto) {
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<boolean> {
     return this.authService.signUp(createUserDto);
   }
 

@@ -62,7 +62,9 @@ export class UsersController {
 
   private async ValidateUserExists(token: string) {
     const authenticatedUser = await this.authService.getProfile(token);
-    const user = await this.usersService.findOne(authenticatedUser.username);
+    const user = await this.usersService.findOneByUserName(
+      authenticatedUser.username,
+    );
 
     if (user === null)
       throw new UnauthorizedException('This user no longer exists.');

@@ -1,4 +1,4 @@
-import { SearchOptions } from '../models/marvel-api/common/marvel-api-search-options.model';
+import { SearchOptions } from '../../models/marvel-api/common/marvel-api-search-options.model';
 
 export function mapSearchParams(options: SearchOptions): URLSearchParams {
   const searchParams = new URLSearchParams();

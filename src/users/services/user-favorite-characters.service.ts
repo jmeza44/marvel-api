@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserFavoriteCharacter } from '../entities/user-favorite-character.entity';
 import { UserFavoriteCharacterDto } from '../models/user-favorite-character.model';
-import { mapUserFavoriteCharacterDto } from '../../shared/utilities/map-user-favorite-character-dto';
+import { mapUserFavoriteCharacterDto } from '../../shared/utilities/mapping/map-user-favorite-character-dto';
 import { UsersService } from 'src/auth/services/users.service';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class UserFavoriteCharactersService {
   ): Promise<boolean> {
     try {
       const username = userFavoriteCharactersDto[0]?.username;
-      const user = await this.usersService.findOne(username);
+      const user = await this.usersService.findOneByUserName(username);
       if (user === null)
         throw new BadRequestException(
           username,
