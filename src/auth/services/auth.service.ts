@@ -5,11 +5,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
-import { UserDto } from 'src/users/models/user.model';
-import { UsersService } from 'src/users/services/users.service';
+import { UserDto } from 'src/auth/models/user.model';
 import { AuthResponse } from '../models/auth-response.model';
 import { CreateUserDto } from '../models/create-user.model';
 import { SignInUserDto } from '../models/sign-in-user.model';
+import { UsersService } from 'src/auth/services/users.service';
 
 @Injectable()
 export class AuthService {
@@ -27,11 +27,7 @@ export class AuthService {
   }
 
   async signUp(createUserDto: CreateUserDto): Promise<boolean> {
-    const user = await this.usersService.findOne(createUserDto.username);
-    if (user !== null)
-      throw new BadRequestException(
-        `User with username '${createUserDto.username}' already exists.`,
-      );
+    await this.TriggerExceptionIfUserExists(createUserDto);
     const createdUser = await this.usersService.create(createUserDto);
     return createdUser !== null;
   }
@@ -46,9 +42,17 @@ export class AuthService {
   }
 
   async validateUser(signInCredentials: SignInUserDto): Promise<UserDto> {
-    const user = await this.usersService.findOne(signInCredentials.username);
+    let user = await this.usersService.findOneByUserName(
+      signInCredentials.usernameOrEmail,
+    );
     if (!user) {
-      throw new UnauthorizedException();
+      user = await this.usersService.findOneByEmail(
+        signInCredentials.usernameOrEmail,
+      );
+      if (!user)
+        throw new UnauthorizedException(
+          'There is not any account with this credentials, please create a new account.',
+        );
     }
 
     const passwordMatch = await compare(
@@ -57,10 +61,30 @@ export class AuthService {
     );
 
     if (!passwordMatch) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Incorrect password.');
     }
 
-    const result: UserDto = { id: user.id, username: user.username };
+    const result: UserDto = {
+      email: user.email,
+      username: user.username,
+      fistName: user.firstName,
+      lastName: user.lastName,
+    };
     return result;
+  }
+
+  private async TriggerExceptionIfUserExists(createUserDto: CreateUserDto) {
+    const userByUserName = await this.usersService.findOneByUserName(
+      createUserDto.username,
+    );
+    const userByEmail = await this.usersService.findOneByEmail(
+      createUserDto.email,
+    );
+    if (userByUserName !== null)
+      throw new BadRequestException(`that username has been taken.`);
+    if (userByEmail !== null)
+      throw new BadRequestException(
+        `We already have registered an account with that email.`,
+      );
   }
 }

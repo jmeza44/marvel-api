@@ -3,7 +3,9 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: { origin: 'http://localhost:4200', methods: ['GET', 'PUT', 'POST'] },
+  });
 
   const config = new DocumentBuilder()
     .setTitle('MARVEL API')

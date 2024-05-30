@@ -7,7 +7,7 @@ import { SearchOptions } from 'src/shared/models/marvel-api/common/marvel-api-se
 
 import { Wrapper } from 'src/shared/models/marvel-api/common/marvel-api-wrapper.model';
 import { Character } from 'src/shared/models/marvel-api/core/marvel-api-character.model';
-import { mapSearchParams } from 'src/shared/utilities/map-search-options-to-query-params';
+import { mapSearchParams } from 'src/shared/utilities/mapping/map-search-options-to-query-params';
 
 @Injectable()
 export class CharacterService {

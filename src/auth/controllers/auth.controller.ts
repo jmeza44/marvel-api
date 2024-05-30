@@ -2,24 +2,24 @@ import {
   Controller,
   Post,
   Body,
-  Get,
-  UnauthorizedException,
   UseGuards,
+  Get,
   Request,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
+  ApiTags,
   ApiResponse,
   ApiBadRequestResponse,
-  ApiTags,
   ApiBearerAuth,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthResponse } from '../models/auth-response.model';
 import { CreateUserDto } from '../models/create-user.model';
 import { SignInUserDto } from '../models/sign-in-user.model';
+import { UserDto } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
-import { UserDto } from 'src/users/models/user.model';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -36,7 +36,7 @@ export class AuthController {
   @Post('sign-up')
   @ApiResponse({ status: 201, description: 'User registered successfully.' })
   @ApiBadRequestResponse({ description: 'Username already exists.' })
-  async signUp(@Body() createUserDto: CreateUserDto) {
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<boolean> {
     return this.authService.signUp(createUserDto);
   }
 
@@ -53,7 +53,7 @@ export class AuthController {
   async getProfile(@Request() request: any): Promise<UserDto> {
     const authorization = request.headers['authorization'];
     if (!authorization) {
-      throw new UnauthorizedException('Authorization header missing');
+      throw new UnauthorizedException('Missing authorization header.');
     }
     const token = authorization.split(' ')[1];
     return this.authService.getProfile(token);

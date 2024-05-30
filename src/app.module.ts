@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { User } from './users/entities/user.entity';
+import { User } from './auth/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { CharactersModule } from './characters/characters.module';
+import { UserFavoriteCharacter } from './users/entities/user-favorite-character.entity';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { CharactersModule } from './characters/characters.module';
       username: process.env.APP_DATABASE_USER_NAME,
       password: process.env.APP_DATABASE_PASSWORD,
       database: process.env.APP_DATABASE_NAME,
-      entities: [User],
+      entities: [User, UserFavoriteCharacter],
       synchronize: true,
     }),
     AuthModule,
