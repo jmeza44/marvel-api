@@ -17,6 +17,7 @@ import { UserFavoriteCharacter } from './users/entities/user-favorite-character.
       username: process.env.APP_DATABASE_USER_NAME,
       password: process.env.APP_DATABASE_PASSWORD,
       database: process.env.APP_DATABASE_NAME,
+      ssl: Boolean(process.env.APP_DATABASE_SSL),
       entities: [User, UserFavoriteCharacter],
       synchronize: true,
     }),

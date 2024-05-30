@@ -26,4 +26,10 @@ export class CharacterService {
       .get<Wrapper<Character>>(`${this.baseApiUrl}/characters`, { params })
       .pipe(map(({ data }) => data));
   }
+
+  getCharacterById(characterId: number): Observable<Character | undefined> {
+    return this.httpService
+      .get<Wrapper<Character>>(`${this.baseApiUrl}/characters/${characterId}`)
+      .pipe(map(({ data: response }) => response.data.results[0]));
+  }
 }
