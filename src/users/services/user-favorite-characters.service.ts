@@ -5,15 +5,18 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { map } from 'rxjs';
+import { UsersService } from 'src/auth/services/users.service';
+import { CharacterService } from 'src/characters/services/character.service';
+import { mapUserFavoriteCharacterDto } from 'src/shared/utilities/mapping/map-user-favorite-character-dto';
 import { UserFavoriteCharacter } from '../entities/user-favorite-character.entity';
 import { UserFavoriteCharacterDto } from '../models/user-favorite-character.model';
-import { mapUserFavoriteCharacterDto } from '../../shared/utilities/mapping/map-user-favorite-character-dto';
-import { UsersService } from 'src/auth/services/users.service';
 
 @Injectable()
 export class UserFavoriteCharactersService {
   constructor(
     private usersService: UsersService,
+    private charactersService: CharacterService,
     @InjectRepository(UserFavoriteCharacter)
     private readonly userFavoriteCharactersRepository: Repository<UserFavoriteCharacter>,
   ) {}
@@ -28,6 +31,10 @@ export class UserFavoriteCharactersService {
     userFavoriteCharactersDto: UserFavoriteCharacterDto[],
   ): Promise<boolean> {
     try {
+      this.validateCharacterExists(
+        userFavoriteCharactersDto.map((c) => c.characterId),
+      );
+
       const username = userFavoriteCharactersDto[0]?.username;
       const user = await this.usersService.findOneByUserName(username);
       if (user === null)
@@ -56,5 +63,21 @@ export class UserFavoriteCharactersService {
         "Error inserting users' favorites characters.",
       );
     }
+  }
+
+  private validateCharacterExists(charactersIds: number[]) {
+    return charactersIds.map((characterId) => {
+      this.charactersService
+        .getCharacterById(characterId)
+        .pipe(map(({ id }) => id === characterId))
+        .subscribe((characterExists) => {
+          if (!characterExists) {
+            throw new BadRequestException(
+              characterId,
+              `Character with id ${characterId} not found.`,
+            );
+          }
+        });
+    });
   }
 }

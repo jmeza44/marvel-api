@@ -7,5 +7,6 @@ import { SharedModule } from 'src/shared/shared.module';
   imports: [SharedModule],
   controllers: [CharactersController],
   providers: [CharacterService],
+  exports: [CharacterService],
 })
 export class CharactersModule {}
