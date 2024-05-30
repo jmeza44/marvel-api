@@ -4,7 +4,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: { origin: 'http://localhost:4200', methods: ['GET', 'PUT', 'POST'] },
+    cors: {
+      origin: process.env.APP_ALLOWED_ORIGIN,
+      methods: ['GET', 'PUT', 'POST'],
+    },
   });
 
   const config = new DocumentBuilder()
@@ -15,7 +18,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 
 bootstrap();
