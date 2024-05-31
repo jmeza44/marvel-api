@@ -6,6 +6,7 @@ import { User } from './auth/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { CharactersModule } from './characters/characters.module';
 import { UserFavoriteCharacter } from './users/entities/user-favorite-character.entity';
+import { ComicsModule } from './comics/comics.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UserFavoriteCharacter } from './users/entities/user-favorite-character.
     AuthModule,
     UsersModule,
     CharactersModule,
+    ComicsModule,
   ],
   controllers: [],
   providers: [],
