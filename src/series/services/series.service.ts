@@ -23,4 +23,10 @@ export class SeriesService {
       >(`${this.baseApiUrl}/characters/${characterId}/series`)
       .pipe(map(({ data }) => data));
   }
+
+  getSerieById(serieId: number): Observable<Serie | undefined> {
+    return this.httpService
+      .get<Wrapper<Serie>>(`${this.baseApiUrl}/series/${serieId}`)
+      .pipe(map(({ data }) => data.data.results[0]));
+  }
 }
