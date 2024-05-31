@@ -1,11 +1,8 @@
-import {
-  Injectable,
-  BadRequestException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { map } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
+
 import { UsersService } from 'src/auth/services/users.service';
 import { CharacterService } from 'src/characters/services/character.service';
 import { mapUserFavoriteCharacterDto } from 'src/shared/utilities/mapping/map-user-favorite-character-dto';
@@ -22,62 +19,73 @@ export class UserFavoriteCharactersService {
   ) {}
 
   async getUserFavoriteCharacters(username: string): Promise<number[]> {
-    return (
-      await this.userFavoriteCharactersRepository.findBy({ username })
-    ).map(({ characterId }) => characterId);
+    const user = await this.usersService.findOneByUserName(username);
+    if (!user) {
+      throw new BadRequestException(
+        `User with user name ${username} not found.`,
+      );
+    }
+    const favoriteCharacters = await this.userFavoriteCharactersRepository.find(
+      { where: { username } },
+    );
+    return favoriteCharacters.map(({ characterId }) => characterId);
   }
 
   async addUserFavoriteCharacter(
-    userFavoriteCharactersDto: UserFavoriteCharacterDto[],
-  ): Promise<boolean> {
-    try {
-      this.validateCharacterExists(
-        userFavoriteCharactersDto.map((c) => c.characterId),
+    userFavoriteCharacterDto: UserFavoriteCharacterDto,
+  ): Promise<void> {
+    const { characterId, username } = userFavoriteCharacterDto;
+    const characterExists = await this.validateCharacterExists(characterId);
+    if (!characterExists) {
+      throw new BadRequestException(
+        `Character with Id ${characterId} not found.`,
       );
+    }
 
-      const username = userFavoriteCharactersDto[0]?.username;
-      const user = await this.usersService.findOneByUserName(username);
-      if (user === null)
-        throw new BadRequestException(
-          username,
-          `User with user name ${username} not found.`,
-        );
-      const currentFavoriteCharacters =
-        await this.getUserFavoriteCharacters(username);
-      const userFavoriteCharacters = userFavoriteCharactersDto
-        .map((userFavoriteCharacter) =>
-          mapUserFavoriteCharacterDto(userFavoriteCharacter),
-        )
-        .filter(
-          (favoriteCharacterToAdd) =>
-            !currentFavoriteCharacters.includes(
-              favoriteCharacterToAdd.characterId,
-            ),
-        );
-      await this.userFavoriteCharactersRepository.insert(
-        userFavoriteCharacters,
+    const user = await this.usersService.findOneByUserName(username);
+    if (!user) {
+      throw new BadRequestException(
+        `User with user name ${username} not found.`,
       );
-      return true;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        "Error inserting users' favorites characters.",
+    }
+
+    const favoriteCharacters = await this.getUserFavoriteCharacters(username);
+    const isAlreadyCreated = favoriteCharacters.includes(characterId);
+    if (!isAlreadyCreated) {
+      await this.userFavoriteCharactersRepository.insert(
+        mapUserFavoriteCharacterDto(userFavoriteCharacterDto),
       );
     }
   }
 
-  private validateCharacterExists(charactersIds: number[]) {
-    return charactersIds.map((characterId) => {
-      this.charactersService
-        .getCharacterById(characterId)
-        .pipe(map(({ id }) => id === characterId))
-        .subscribe((characterExists) => {
-          if (!characterExists) {
-            throw new BadRequestException(
-              characterId,
-              `Character with id ${characterId} not found.`,
-            );
-          }
-        });
-    });
+  async removeUserFavoriteCharacter(
+    userFavoriteCharacterDto: UserFavoriteCharacterDto,
+  ): Promise<void> {
+    const { characterId, username } = userFavoriteCharacterDto;
+    const user = await this.usersService.findOneByUserName(username);
+    if (!user) {
+      throw new BadRequestException(
+        `User with user name ${username} not found.`,
+      );
+    }
+
+    const characterToRemove =
+      await this.userFavoriteCharactersRepository.findOne({
+        where: { characterId, username },
+      });
+    if (characterToRemove) {
+      await this.userFavoriteCharactersRepository.remove(characterToRemove);
+    }
+  }
+
+  private async validateCharacterExists(characterId: number): Promise<boolean> {
+    try {
+      const character = await lastValueFrom(
+        this.charactersService.getCharacterById(characterId),
+      );
+      return character !== undefined;
+    } catch (error) {
+      return false;
+    }
   }
 }
