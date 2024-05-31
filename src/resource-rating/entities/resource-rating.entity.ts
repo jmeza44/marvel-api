@@ -9,8 +9,8 @@ import {
 
 @Entity()
 export class ResourceRating extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  uuid: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ nullable: false })
   resourceId: string;
