@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { INestApplication, Logger } from '@nestjs/common';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await initializeNestApp();
@@ -21,6 +21,7 @@ async function initializeNestApp(): Promise<INestApplication<any>> {
     origin: process.env.APP_ALLOWED_ORIGIN.split(';'),
     methods: ['GET', 'PUT', 'POST'],
   });
+  app.useGlobalPipes(new ValidationPipe());
   return app;
 }
 
