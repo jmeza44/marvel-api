@@ -23,4 +23,10 @@ export class ComicsService {
       >(`${this.baseApiUrl}/characters/${characterId}/comics`)
       .pipe(map(({ data }) => data));
   }
+
+  getComicById(comicId: number): Observable<Comic | undefined> {
+    return this.httpService
+      .get<Wrapper<Comic>>(`${this.baseApiUrl}/comics/${comicId}`)
+      .pipe(map(({ data }) => data.data.results[0]));
+  }
 }
