@@ -6,11 +6,16 @@ import { SearchOptions } from 'src/shared/models/marvel-api/common/marvel-api-se
 import { Wrapper } from 'src/shared/models/marvel-api/common/marvel-api-wrapper.model';
 import { Character } from 'src/shared/models/marvel-api/core/marvel-api-character.model';
 import { CharacterService } from '../services/character.service';
+import { ComicsService } from 'src/comics/services/comics.service';
+import { Comic } from 'src/shared/models/marvel-api/core/marvel-api-comic.model';
 
 @ApiTags('Characters')
 @Controller('characters')
 export class CharactersController {
-  constructor(private characterService: CharacterService) {}
+  constructor(
+    private characterService: CharacterService,
+    private comicsService: ComicsService,
+  ) {}
 
   @Get()
   getCharacters(
@@ -24,5 +29,12 @@ export class CharactersController {
     @Param('characterId') characterId: number,
   ): Observable<Character | undefined> {
     return this.characterService.getCharacterById(characterId);
+  }
+
+  @Get(':characterId/comics')
+  getCharacterComics(
+    @Param('characterId') characterId: number,
+  ): Observable<Wrapper<Comic>> {
+    return this.comicsService.getCharacterComics(characterId);
   }
 }
