@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
+import { config } from 'dotenv';
+config();
 
 async function bootstrap() {
   const app = await initializeNestApp();
@@ -17,12 +19,27 @@ async function initializeNestApp(): Promise<INestApplication<any>> {
     logger: new Logger('Marvel API', { timestamp: true }),
   });
   Logger.log('APP initialized', 'Application Bootstrap');
-  app.enableCors({
-    origin: process.env.APP_ALLOWED_ORIGIN.split(';'),
-    methods: ['GET', 'PUT', 'POST'],
-  });
+  const allowedOrigins = process.env.APP_ALLOWED_ORIGIN.split(';');
+
+  configureCors(app, allowedOrigins);
   app.useGlobalPipes(new ValidationPipe());
   return app;
+}
+
+function configureCors(app: INestApplication<any>, allowedOrigins: string[]) {
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
 }
 
 function initializeSwagger(app: INestApplication<any>) {
