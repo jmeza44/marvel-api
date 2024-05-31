@@ -30,6 +30,6 @@ export class CharacterService {
   getCharacterById(characterId: number): Observable<Character | undefined> {
     return this.httpService
       .get<Wrapper<Character>>(`${this.baseApiUrl}/characters/${characterId}`)
-      .pipe(map(({ data: response }) => response.data.results[0]));
+      .pipe(map(({ data }) => data.data.results[0]));
   }
 }

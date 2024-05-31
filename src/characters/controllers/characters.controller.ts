@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 
@@ -17,5 +17,12 @@ export class CharactersController {
     @Query() searchOptions: SearchOptions,
   ): Observable<Wrapper<Character>> {
     return this.characterService.getCharacters(searchOptions);
+  }
+
+  @Get(':characterId')
+  getCharacterById(
+    @Param('characterId') characterId: number,
+  ): Observable<Character | undefined> {
+    return this.characterService.getCharacterById(characterId);
   }
 }

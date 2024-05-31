@@ -1,5 +1,11 @@
 import { HttpModule, HttpService } from '@nestjs/axios';
-import { Module, OnModuleInit } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  Logger,
+  Module,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 
@@ -28,15 +34,34 @@ export class SharedModule implements OnModuleInit {
       if (request.url.startsWith(this.marvelApiBaseUrl)) {
         request = {
           ...request,
-          params: this.appendMarvelApiAuthentication(request.params),
+          params: this.appendMarvelApiAuthentication(
+            request.params ?? new URLSearchParams(),
+          ),
         };
       }
       return request;
     });
 
-    this.httpService.axiosRef.interceptors.response.use((response) => {
-      return response;
-    });
+    this.httpService.axiosRef.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error: any) => {
+        if (error.response.status === 404) {
+          Logger.warn(
+            `[External Marvel API Not Found Error] Status Code: ${error['response']['data']['code']} - Message: ${error['response']['data']['status']} - Request Path: ${error['request']['path']}`,
+          );
+          throw new NotFoundException(`${error['response']['data']['status']}`);
+        } else {
+          Logger.error(
+            `[External Marvel API Error] Status Code: ${error['response']['data']['code']} - Message: ${error['response']['data']['status']} - Request Path: ${error['request']['path']}`,
+          );
+          throw new InternalServerErrorException(
+            `${error['response']['data']['status']}`,
+          );
+        }
+      },
+    );
   }
 
   private appendMarvelApiAuthentication(
