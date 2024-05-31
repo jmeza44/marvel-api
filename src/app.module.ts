@@ -3,11 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entities/user.entity';
-import { UsersModule } from './users/users.module';
 import { CharactersModule } from './characters/characters.module';
-import { UserFavoriteCharacter } from './users/entities/user-favorite-character.entity';
 import { ComicsModule } from './comics/comics.module';
+import { ResourceRatingModule } from './resource-rating/resource-rating.module';
 import { SeriesModule } from './series/series.module';
+import { ResourceRating } from './resource-rating/entities/resource-rating.entity';
+import { UserFavoriteCharacter } from './users/entities/user-favorite-character.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { SeriesModule } from './series/series.module';
       password: process.env.APP_DATABASE_PASSWORD,
       database: process.env.APP_DATABASE_NAME,
       ssl: Boolean(process.env.APP_DATABASE_SSL === 'true'),
-      entities: [User, UserFavoriteCharacter],
+      entities: [User, UserFavoriteCharacter, ResourceRating],
       synchronize: true,
       logging: 'all',
       logger: 'debug',
@@ -31,6 +33,7 @@ import { SeriesModule } from './series/series.module';
     CharactersModule,
     ComicsModule,
     SeriesModule,
+    ResourceRatingModule,
   ],
   controllers: [],
   providers: [],
