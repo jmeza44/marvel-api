@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { CharactersModule } from './characters/characters.module';
 import { UserFavoriteCharacter } from './users/entities/user-favorite-character.entity';
 import { ComicsModule } from './comics/comics.module';
+import { SeriesModule } from './series/series.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ComicsModule } from './comics/comics.module';
     UsersModule,
     CharactersModule,
     ComicsModule,
+    SeriesModule,
   ],
   controllers: [],
   providers: [],
