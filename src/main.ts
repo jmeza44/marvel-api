@@ -15,7 +15,7 @@ async function initializeNestApp(): Promise<INestApplication<any>> {
   Logger.log('Initializing the APP', 'Application Bootstrap');
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: process.env.APP_ALLOWED_ORIGIN,
+      origin: process.env.APP_ALLOWED_ORIGIN.split(';'),
       methods: ['GET', 'PUT', 'POST'],
     },
     logger: new Logger('Marvel API', { timestamp: true }),
