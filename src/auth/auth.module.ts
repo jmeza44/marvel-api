@@ -8,6 +8,7 @@ import { User } from './entities/user.entity';
 import { AuthService } from './services/auth.service';
 import { UsersService } from './services/users.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { UserValidationService } from './services/user-validation.service';
 
 @Module({
   imports: [
@@ -22,8 +23,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, UsersService, JwtStrategy],
+  providers: [AuthService, UsersService, JwtStrategy, UserValidationService],
   controllers: [AuthController],
-  exports: [AuthService, UsersService],
+  exports: [AuthService, UsersService, UserValidationService],
 })
 export class AuthModule {}
