@@ -36,7 +36,7 @@ function configureCors(app: INestApplication<any>, allowedOrigins: string[]) {
       }
     },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
     preflightContinue: false,
     optionsSuccessStatus: 204,
   });
